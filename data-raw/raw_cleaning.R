@@ -60,9 +60,10 @@ eq_good_date <- function(yr, mnth, dy) {
 eq_location_clean <- function(loc_nm) {
     # remove the country and colon, convert to title case
     clean_name <- gsub("^.*:\\s*","",loc_nm)
+    clean_name <- gsub(",([[:alpha:]])",", \\1", clean_name)
 
     clean_name <- tolower(clean_name)
-    clean_name <- sapply(clean_name, title_case)
+    clean_name <- sapply(clean_name, title_case, USE.NAMES = FALSE)
     return(clean_name)
 }
 
@@ -71,7 +72,7 @@ title_case <- function(char_vect) {
     words <- strsplit(char_vect, " ")[[1]]
     is_paren <- substring(words, 1,1) == "("
     front <- toupper(substring(words,1,1))
-    front[is_paren] <- paste0("(", toupper(substring(words[is_paren],2,1)))
+    front[is_paren] <- paste0("(", toupper(substring(words[is_paren],2,2)))
     back <- substring(words, 2)
     back[is_paren] <- substring(words[is_paren],3)
     return(paste0(front, back, collapse = " "))
