@@ -13,35 +13,28 @@ raw_NOAA <- readr::read_delim('./data-raw/signif.txt',delim = '\t')
 
 # a function for converting the dates
 # needs to handle BCE dates (negative), missing months, missing years
+# now vectorized to work with dplyr::mutate
 eq_good_date <- function(yr, mnth, dy) {
-    # first set BCE flag
-    BCE <- FALSE
-    if(yr < 0) {
-        BCE <- TRUE
-    }
+
+    # create a BCE mask
+    BCE <- (yr < 0)
 
     # no year values are ever missing, so just pad to 4, eliminating the neg
     yr_str <- stringr::str_pad(abs(yr), 4, "left","0")
 
     # assume missing month or day are just 1
-    if(is.na(mnth)) {
-        mnth <- 1
-    }
-
-    if(is.na(dy)) {
-        dy <- 1
-    }
+    mnth[is.na(mnth)] <- 1
+    dy[is.na(dy)] <- 1
 
     # pad month and day to 2 digits
     mnth_str <- stringr::str_pad(mnth, 2, "left","0")
     dy_str <- stringr::str_pad(dy, 2, "left","0")
 
     # handle the easy case first, CE dates
-    if(!BCE) {
-        return(lubridate::ymd(paste(yr_str, mnth_str, dy_str, sep = "-")))
-    }
+    good_dates <- (lubridate::ymd(paste(yr_str, mnth_str, dy_str, sep = "-")))
 
-    # oh no, fell through, gotta deal with BCE conversion . . .
+
+    # now, unfortunately, gotta deal with BCE conversion . . .
     # so first, R doesn't handle BCE dates well.  For example--there is no
     # such thing as year 0, but R has one in its Date class.  In addition,
     # need to parse through manual numeric conversion
@@ -51,9 +44,10 @@ eq_good_date <- function(yr, mnth, dy) {
     # and return the resulting date class object.  Date math will still need to be
     # adjusted should it be required later--it's either this or have the date appear strange
 
-    origin <- as.numeric(lubridate::ymd("0000-01-01"))
-    CE_equivalent <- as.numeric(lubridate::ymd(paste(yr_str, mnth_str, dy_str, sep = "-")))
-    return(as.Date(origin - CE_equivalent, origin = lubridate::origin))
+    orig <- as.numeric(lubridate::ymd("0000-01-01"))
+    CE_equivalent <- as.numeric(good_dates)
+    good_dates[BCE] <- as.Date(orig - (CE_equivalent[BCE] - orig), origin = lubridate::origin)
+    return(good_dates)
 }
 
 # location name cleaning function
