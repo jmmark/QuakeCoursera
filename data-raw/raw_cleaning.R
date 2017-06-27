@@ -61,7 +61,8 @@ eq_location_clean <- function(loc_nm) {
     # remove the country and colon, convert to title case
     clean_name <- gsub("^.*:\\s*","",loc_nm)
 
-    clean_name <- title_case(tolower(clean_name))
+    clean_name <- tolower(clean_name)
+    clean_name <- sapply(clean_name, title_case)
     return(clean_name)
 }
 
@@ -84,7 +85,7 @@ eq_clean_data <- function(raw_data) {
     # 2. make sure LONGITUDE and LATTITUDE are numeric; drop NA lat/lon
     # 3. clean location name
     clean_data <- raw_data %>%
-        mutate(DATE = sapply(eq_good_date(YEAR, MONTH, DAY))) %>%
+        mutate(DATE = eq_good_date(YEAR, MONTH, DAY)) %>%
         filter(!is.na(LATITUDE) & !is.na(LONGITUDE)) %>%
         mutate(LONGITUDE = as.numeric(LONGITUDE), LATITUDE = as.numeric(LATITUDE)) %>%
         mutate(LOCATION_NAME = eq_location_clean(LOCATION_NAME))
