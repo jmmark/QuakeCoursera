@@ -79,11 +79,19 @@ eq_clean_data <- function(raw_data) {
     # 1. create DATE, and make sure it is date class
     # 2. make sure LONGITUDE and LATTITUDE are numeric; drop NA lat/lon
     # 3. clean location name
+    # 4. make sure magnatude measures are numeric
     clean_data <- raw_data %>%
         mutate(DATE = eq_good_date(YEAR, MONTH, DAY)) %>%
         filter(!is.na(LATITUDE) & !is.na(LONGITUDE)) %>%
         mutate(LONGITUDE = as.numeric(LONGITUDE), LATITUDE = as.numeric(LATITUDE)) %>%
-        mutate(LOCATION_NAME = eq_location_clean(LOCATION_NAME))
+        mutate(LOCATION_NAME = eq_location_clean(LOCATION_NAME)) %>%
+        mutate(EQ_PRIMARY = as.numeric(EQ_PRIMARY),
+               EQ_MAG_MW = as.numeric(EQ_MAG_MW),
+               EQ_MAG_MS = as.numeric(EQ_MAG_MS),
+               EQ_MAG_MB = as.numeric(EQ_MAG_MB),
+               EQ_MAG_ML = as.numeric(EQ_MAG_ML),
+               EQ_MAG_MFA = as.numeric(EQ_MAG_MFA),
+               EQ_MAG_UNK = as.numeric(EQ_MAG_UNK))
 
     return(clean_data)
 }

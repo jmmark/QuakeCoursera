@@ -19,20 +19,20 @@ geom_timeline <- function(mapping = NULL, data = NULL, stat = 'timeline',
 GeomTimeline <- ggplot2::ggproto('GeomTimeline', Geom,
         required_aes = c('x'),
         default_aes = aes(y = NULL, color = 'black',
-                          fill = 'black', size = .5, alpha = 0.5),
-        draw_key = draw_key_point,
+                          fill = 'black', size = .05, alpha = 0.3),
+        draw_key = draw_key_path,
         draw_group = function(data, panel_params, coord) {
             coords <- coord$transform(data, panel_params)
-            print(coords)
-            grid::pointsGrob(
+            debug_me <<- coords
+            grid::circleGrob(
                 coords$x,
                 coords$y,
-                pch = 21,
-                size = unit(coords$size, 'char'),
+                r = coords$size / 100,
                 gp = grid::gpar(
                     col = coords$colour,
                     fill = coords$fill,
                     alpha = coords$alpha
+
                 )
             )
         }
@@ -55,7 +55,7 @@ StatTimeline <- ggplot2::ggproto('StatTimeline',Stat,
             if(!('y' %in% names(data))) {
                 data$y <- 1
             }
-            print(names(data))
+            # print(names(data))
             return(data[data$x >= x_min & data$x <= x_max,])
         }
 )
