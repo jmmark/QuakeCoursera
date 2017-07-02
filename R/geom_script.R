@@ -48,6 +48,36 @@ GeomTimeline <- ggplot2::ggproto('GeomTimeline', Geom,
         }
 )
 
+geom_timeline_label <- function(mapping = NULL, data = NULL, stat = 'timeline',
+                          position = 'identity', na.rm = FALSE, show.legend = NA,
+                          inherit.aes = TRUE, x_min, x_max, ...) {
+    ggplot2::layer(
+        geom = GeomTimelineLabel, mapping = mapping, data = data, stat = stat,
+        position = position, show.legend = show.legend, inherit.aes = inherit.aes,
+        params = list(na.rm = na.rm, x_min = x_min, x_max = x_max, ...)
+    )
+}
+
+GeomTimelineLabel <- ggplot2::ggproto('GeomTimelineLabel', Geom,
+             required_aes = c('x'),
+             default_aes = aes(y = NULL, color = 'black',
+                               lty = 1, lwd = 1),
+             draw_key = draw_key_abline,
+             draw_group = function(data, panel_params, coord) {
+                 coords <- coord$transform(data, panel_params)
+                 debug_me <<- coords
+                 grid::linesGrob(
+                     c(coords$x, coords$x),
+                     c(coords$y + .1, coords$y + .3),
+                     gp = grid::gpar(
+                         col = coords$colour,
+                         lty = coords$lty,
+                         lwd = coords$lwd
+
+                     )
+                 )
+             }
+)
 
 
 stat_timeline <- function(mapping = NULL, data = NULL, geom = 'timeline',
