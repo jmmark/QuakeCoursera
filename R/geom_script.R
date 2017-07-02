@@ -16,11 +16,21 @@ geom_timeline <- function(mapping = NULL, data = NULL, stat = 'timeline',
     )
 }
 
+# allow for circle grob to be passed easily to the legend
+my_draw_key_circle <- function(data, params, size) {
+    print(data)
+    grid::circleGrob(r = data$size/12,
+                     gp = gpar(
+                         col = data$color,
+                         fill = alpha(data$fill, data$alpha)
+                     ))
+}
+
 GeomTimeline <- ggplot2::ggproto('GeomTimeline', Geom,
         required_aes = c('x'),
         default_aes = aes(y = NULL, color = 'black',
-                          fill = 'black', size = .05, alpha = 0.3),
-        draw_key = draw_key_path,
+                          fill = 'black', size = 5,, alpha = 0.3),
+        draw_key = my_draw_key_circle,
         draw_group = function(data, panel_params, coord) {
             coords <- coord$transform(data, panel_params)
             debug_me <<- coords
@@ -37,6 +47,8 @@ GeomTimeline <- ggplot2::ggproto('GeomTimeline', Geom,
             )
         }
 )
+
+
 
 stat_timeline <- function(mapping = NULL, data = NULL, geom = 'timeline',
                           position = 'identity', na.rm = FALSE, show.legend = NA,
