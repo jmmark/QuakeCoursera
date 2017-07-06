@@ -35,8 +35,7 @@
 #' @importFrom dplyr mutate filter
 #' @importFrom magrittr "%>%"
 #' @import leaflet
-
-
+#'
 eq_map <- function(data, annot_col = NULL) {
     mp <- data %>% leaflet::leaflet() %>%
         leaflet::addTiles()
@@ -74,6 +73,7 @@ eq_map <- function(data, annot_col = NULL) {
 #'
 #' @seealso \code{\link{eq_map}}, \pkg{leaflet}
 #' @export
+#'
 eq_create_label <- function(data) {
     # stitch together the HTML: bold label
     aStr <- paste('<b>Location:</b>',data[['LOCATION_NAME']])
