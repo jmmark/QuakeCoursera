@@ -80,6 +80,7 @@ eq_clean_data <- function(raw_data) {
     # 2. make sure LONGITUDE and LATTITUDE are numeric; drop NA lat/lon
     # 3. clean location name
     # 4. make sure magnatude measures are numeric
+    # 5. make sure deaths are numeric
     clean_data <- raw_data %>%
         mutate(DATE = eq_good_date(YEAR, MONTH, DAY)) %>%
         filter(!is.na(LATITUDE) & !is.na(LONGITUDE)) %>%
@@ -91,7 +92,9 @@ eq_clean_data <- function(raw_data) {
                EQ_MAG_MB = as.numeric(EQ_MAG_MB),
                EQ_MAG_ML = as.numeric(EQ_MAG_ML),
                EQ_MAG_MFA = as.numeric(EQ_MAG_MFA),
-               EQ_MAG_UNK = as.numeric(EQ_MAG_UNK))
+               EQ_MAG_UNK = as.numeric(EQ_MAG_UNK),
+               DEATHS = as.numeric(DEATHS),
+               TOTAL_DEATHS = as.numeric(TOTAL_DEATHS))
 
     return(clean_data)
 }
