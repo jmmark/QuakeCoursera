@@ -60,7 +60,8 @@ parameters \code{x_min} and \code{x_max} are actually plotted.  No further
 transormations occur
 }
 \examples{
-#' NOAA <- data('clean_NOAA')
+data('clean_NOAA')
+NOAA <- clean_NOAA
 plot_NOAA <- NOAA[NOAA$COUNTRY=="USA" | NOAA$COUNTRY=="CANADA",]
 xmin <- lubridate::ymd("2010-01-01")
 xmax <- lubridate::ymd("2017-07-01")

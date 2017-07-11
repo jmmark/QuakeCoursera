@@ -60,7 +60,7 @@ eq_map <- function(data, annot_col = NULL) {
 #'
 #' @param data A dataframe containing location names in column \code{LOCATION_NAME},
 #'   earthquake magnatude in column\code{EQ_PRIMARY}, and total deaths caused in column
-#'   \code(TOTAL_DEATHS).  The included EQ_NAA dataframe is already correctly formatted
+#'   \code{TOTAL_DEATHS}.  The included EQ_NAA dataframe is already correctly formatted
 #'
 #' @return A character vector of formatted html strings to label the popups in
 #'   \code{\link{eq_map}}

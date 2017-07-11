@@ -13,7 +13,8 @@ This function creates the ggproto Geom object to plot the necessary grid grob fo
 \code{geom_timeline}
 }
 \examples{
-#' NOAA <- data('clean_NOAA')
+data('clean_NOAA')
+NOAA <- clean_NOAA
 plot_NOAA <- NOAA[NOAA$COUNTRY=="USA" | NOAA$COUNTRY=="CANADA",]
 xmin <- lubridate::ymd("2010-01-01")
 xmax <- lubridate::ymd("2017-07-01")

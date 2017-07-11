@@ -35,7 +35,8 @@
 #'   can convey yet more information
 #'
 #' @examples
-#' NOAA <- data('clean_NOAA')
+#' data('clean_NOAA')
+#' NOAA <- clean_NOAA
 #' plot_NOAA <- NOAA[NOAA$COUNTRY=="USA" | NOAA$COUNTRY=="CANADA",]
 #' xmin <- lubridate::ymd("2010-01-01")
 #' xmax <- lubridate::ymd("2017-07-01")
@@ -78,7 +79,8 @@ my_draw_key_circle <- function(data, params, size) {
 #' \code{geom_timeline}
 #'
 #' @examples
-#' #' NOAA <- data('clean_NOAA')
+#' data('clean_NOAA')
+#' NOAA <- clean_NOAA
 #' plot_NOAA <- NOAA[NOAA$COUNTRY=="USA" | NOAA$COUNTRY=="CANADA",]
 #' xmin <- lubridate::ymd("2010-01-01")
 #' xmax <- lubridate::ymd("2017-07-01")
@@ -91,7 +93,7 @@ my_draw_key_circle <- function(data, params, size) {
 #' @importFrom lubridate ymd
 GeomTimeline <- ggplot2::ggproto('GeomTimeline', Geom,
         required_aes = c('x'),
-        default_aes = aes(y = NULL, color = 'black',
+        default_aes = ggplot2::aes(y = NULL, color = 'black',
                           fill = 'black', size = 5,, alpha = 0.3),
         draw_key = my_draw_key_circle,
         draw_group = function(data, panel_params, coord) {
@@ -141,14 +143,15 @@ GeomTimeline <- ggplot2::ggproto('GeomTimeline', Geom,
 #'
 #'
 #' @examples
-#' NOAA <- data('clean_NOAA')
+#' data('clean_NOAA')
+#' NOAA <- clean_NOAA
 #' plot_NOAA <- NOAA[NOAA$COUNTRY=="USA" | NOAA$COUNTRY=="CANADA",]
 #' xmin <- lubridate::ymd("2010-01-01")
 #' xmax <- lubridate::ymd("2017-07-01")
 #' plt <- ggplot2::ggplot(data = plot_NOAA, ggplot2::aes(x = DATE, y = COUNTRY)) +
 #'   geom_timeline(ggplot2::aes(size = EQ_PRIMARY), x_min = xmin, x_max = xmax) +
 #'   geom_timeline_label(ggplot2::aes(magnatude = EQ_PRIMARY),
-#'      x_min = xmin, x_max = xmax, top_x_mag = 5)
+#'      x_min = xmin, x_max = xmax, top_x_mag = 5) +
 #'   ggplot2::theme_minimal()
 #' print(plt)
 #'
@@ -173,14 +176,15 @@ geom_timeline_label <- function(mapping = NULL, data = NULL, stat = 'timeline_la
 #' \code{geom_timeline_label}
 #'
 #' @examples
-#' NOAA <- data('clean_NOAA')
+#' data('clean_NOAA')
+#' NOAA <- clean_NOAA
 #' plot_NOAA <- NOAA[NOAA$COUNTRY=="USA" | NOAA$COUNTRY=="CANADA",]
 #' xmin <- lubridate::ymd("2010-01-01")
 #' xmax <- lubridate::ymd("2017-07-01")
 #' plt <- ggplot2::ggplot(data = plot_NOAA, ggplot2::aes(x = DATE, y = COUNTRY)) +
 #'   geom_timeline(ggplot2::aes(size = EQ_PRIMARY), x_min = xmin, x_max = xmax) +
 #'   geom_timeline_label(ggplot2::aes(magnatude = EQ_PRIMARY),
-#'      x_min = xmin, x_max = xmax, top_x_mag = 5)
+#'      x_min = xmin, x_max = xmax, top_x_mag = 5) +
 #'   ggplot2::theme_minimal()
 #' print(plt)
 #'
@@ -229,7 +233,8 @@ GeomTimelineLabel <- ggplot2::ggproto('GeomTimelineLabel', Geom,
 #' @inheritParams geom_timeline
 #'
 #' @examples
-#' #' NOAA <- data('clean_NOAA')
+#' data('clean_NOAA')
+#' NOAA <- clean_NOAA
 #' plot_NOAA <- NOAA[NOAA$COUNTRY=="USA" | NOAA$COUNTRY=="CANADA",]
 #' xmin <- lubridate::ymd("2010-01-01")
 #' xmax <- lubridate::ymd("2017-07-01")
@@ -257,7 +262,8 @@ stat_timeline <- function(mapping = NULL, data = NULL, geom = 'timeline',
 #' plot the necessary grid grob for \code{stat_timeline}
 #'
 #' @examples
-#' #' NOAA <- data('clean_NOAA')
+#' data('clean_NOAA')
+#' NOAA <- clean_NOAA
 #' plot_NOAA <- NOAA[NOAA$COUNTRY=="USA" | NOAA$COUNTRY=="CANADA",]
 #' xmin <- lubridate::ymd("2010-01-01")
 #' xmax <- lubridate::ymd("2017-07-01")
@@ -289,14 +295,15 @@ StatTimeline <- ggplot2::ggproto('StatTimeline',Stat,
 #' @inheritParams geom_timeline_label
 #'
 #' @examples
-#' NOAA <- data('clean_NOAA')
+#' data('clean_NOAA')
+#' NOAA <- clean_NOAA
 #' plot_NOAA <- NOAA[NOAA$COUNTRY=="USA" | NOAA$COUNTRY=="CANADA",]
 #' xmin <- lubridate::ymd("2010-01-01")
 #' xmax <- lubridate::ymd("2017-07-01")
 #' plt <- ggplot2::ggplot(data = plot_NOAA, ggplot2::aes(x = DATE, y = COUNTRY)) +
 #'   geom_timeline(ggplot2::aes(size = EQ_PRIMARY), x_min = xmin, x_max = xmax) +
 #'   geom_timeline_label(ggplot2::aes(magnatude = EQ_PRIMARY),
-#'      x_min = xmin, x_max = xmax, top_x_mag = 5)
+#'      x_min = xmin, x_max = xmax, top_x_mag = 5) +
 #'   ggplot2::theme_minimal()
 #' print(plt)
 #'
@@ -321,14 +328,15 @@ stat_timeline_label <- function(mapping = NULL, data = NULL, geom = 'timeline_la
 #' plot the necessary grid grob for \code{stat_timeline}
 #'
 #' @examples
-#' NOAA <- data('clean_NOAA')
+#' data('clean_NOAA')
+#' NOAA <- clean_NOAA
 #' plot_NOAA <- NOAA[NOAA$COUNTRY=="USA" | NOAA$COUNTRY=="CANADA",]
 #' xmin <- lubridate::ymd("2010-01-01")
 #' xmax <- lubridate::ymd("2017-07-01")
 #' plt <- ggplot2::ggplot(data = plot_NOAA, ggplot2::aes(x = DATE, y = COUNTRY)) +
 #'   geom_timeline(ggplot2::aes(size = EQ_PRIMARY), x_min = xmin, x_max = xmax) +
 #'   geom_timeline_label(ggplot2::aes(magnatude = EQ_PRIMARY),
-#'      x_min = xmin, x_max = xmax, top_x_mag = 5)
+#'      x_min = xmin, x_max = xmax, top_x_mag = 5) +
 #'   ggplot2::theme_minimal()
 #' print(plt)
 #'

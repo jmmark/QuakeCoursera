@@ -13,14 +13,15 @@ This function creates the ggproto Geom object to plot the necessary grid grob fo
 \code{geom_timeline_label}
 }
 \examples{
-NOAA <- data('clean_NOAA')
+data('clean_NOAA')
+NOAA <- clean_NOAA
 plot_NOAA <- NOAA[NOAA$COUNTRY=="USA" | NOAA$COUNTRY=="CANADA",]
 xmin <- lubridate::ymd("2010-01-01")
 xmax <- lubridate::ymd("2017-07-01")
 plt <- ggplot2::ggplot(data = plot_NOAA, ggplot2::aes(x = DATE, y = COUNTRY)) +
   geom_timeline(ggplot2::aes(size = EQ_PRIMARY), x_min = xmin, x_max = xmax) +
   geom_timeline_label(ggplot2::aes(magnatude = EQ_PRIMARY),
-     x_min = xmin, x_max = xmax, top_x_mag = 5)
+     x_min = xmin, x_max = xmax, top_x_mag = 5) +
   ggplot2::theme_minimal()
 print(plt)
 
