@@ -31,6 +31,13 @@
 #' @param x_max (optional) A Date object of the latest data to be plotted
 #' @param stat (optional) Stat Override the defailt Stat transformation of 'timeline'
 #'
+#'
+#' @details
+#'
+#' @examples
+#'
+#' @export
+#' @importFrom
 geom_timeline <- function(mapping = NULL, data = NULL, stat = 'timeline',
                           position = 'identity', na.rm = FALSE, show.legend = NA,
                           inherit.aes = TRUE, x_min = NULL, x_max = NULL, ...) {
