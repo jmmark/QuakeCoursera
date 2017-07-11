@@ -121,7 +121,7 @@ title_case <- function(char_vect) {
 #' @details
 #' The raw data is available \href{https://www.ngdc.noaa.gov/nndc/struts/form?t=101650&s=1&d=1}{here}
 #' The data cleanup does the following:
-#'  1. create DATE, and make sure it is date class
+#' 1. create DATE, and make sure it is date class
 #' 2. make sure LONGITUDE and LATTITUDE are numeric; drop NA lat/lon
 #' 3. clean location name
 #' 4. make sure magnatude measures are numeric

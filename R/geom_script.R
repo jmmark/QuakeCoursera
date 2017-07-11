@@ -3,12 +3,37 @@
 # 2 geom: annotations above timeline labeling the earthquakes
 # use stat to subset the data or the x largest earthquakes as required
 
-library(ggplot2)
-library(grid)
+#library(ggplot2)
+#library(grid)
 
+
+#' A geom for adding a timeline plot
+#'
+#' This geom plots a timeline, with circles showing the dates when the event occurred.
+#' It is intended for the purposes of graphically exploring the NOAA Significant
+#' Earthquake Database (included in this package), but can show any data with a column
+#' of valid \code{date} objects
+#'
+#' @section Aesthetics:
+#' \code{geom_timeline} understands the following aesthetics (required are in bold):
+#' \itemize{
+#'   \item \storng{\code{x}}
+#'   \item \code{y}
+#'   \item \code{color}
+#'   \item \code{fill}
+#'   \item \code{size}
+#'   \item \code{alpha}
+#' }
+#'
+#' @inheritParams ggplot2::geom_point
+#'
+#' @param x_min (optional) A Date object of the earliest data to be plotted
+#' @param x_max (optional) A Date object of the latest data to be plotted
+#' @param stat (optional) Stat Override the defailt Stat transformation of 'timeline'
+#'
 geom_timeline <- function(mapping = NULL, data = NULL, stat = 'timeline',
                           position = 'identity', na.rm = FALSE, show.legend = NA,
-                          inherit.aes = TRUE, x_min, x_max, ...) {
+                          inherit.aes = TRUE, x_min = NULL, x_max = NULL, ...) {
     ggplot2::layer(
         geom = GeomTimeline, mapping = mapping, data = data, stat = stat,
         position = position, show.legend = show.legend, inherit.aes = inherit.aes,
