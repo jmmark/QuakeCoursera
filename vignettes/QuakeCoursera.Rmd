@@ -1,0 +1,71 @@
+---
+title: "Using the QuakeCoursera Package"
+author: "Jake Markman"
+date: "7/11/2017"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using the QuakeCoursera Package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r echo = FALSE, messages = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+options(tibble.print_min = 4L, tibble.print_max = 4L)
+library(QuakeCursera)
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(leaflet)
+```  
+
+QuakeCoursera is a package developed as the capstone project for the Advanced 
+R Programming specialization on [Coursera](http://www.coursera.org).  It exists
+to help clean and visualize data from the [NOAA Significant Earthquake Database](https://www.ngdc.noaa.gov/nndc/struts/form?t=101650&s=1&d=1)  
+  
+This document serves as an introduction to the package and demonstrates
+how to use each of the individual features.
+
+This document is organized into three broad categores, as follows:  
+
+1.  [Getting and Cleaning the Data](data)  
+2.  [Timeline Visualization](timeline)  
+3.  [Interactive Mapping](mapping)  
+
+## Getting and Cleaning the Data  
+<a id="data"></a>
+
+The [NOAA Significant Earthquake Database](https://www.ngdc.noaa.gov/nndc/struts/form?t=101650&s=1&d=1) 
+is an amazing resource.  It has information on earthquakes that have occurred worldwide over more than 
+4000 years.  However as a raw text file, it isn't the easist to work with.  
+
+Some cleaning is required to get the data ready to work nicely with the visualization
+functions provided below.  The easist thing to do is simply to load the clean dataset 
+included with this package using the `data()` function:  
+
+```{r}
+data('clean_NOAA')
+```  
+
+The drawback with this approach is that the included dataset has been frozen as of the
+date of the download for creation of this package, July 1 2017.  You can download the 
+most recent dataset yourself [here](https://www.ngdc.noaa.gov/nndc/struts/results?type_0=Exact&query_0=$ID&t=101650&s=13&d=189&dfn=signif.txt) 
+and clean it using the `eq_clean_data()` function.  Assuming you have downloaded 
+the raw data to your working directory as 'signif.txt':  
+
+```{r eval = FALSE}
+clean_NOAA <- readr::read_delim('signif.txt',delim = '\t') %>%
+    eq_clean_data()
+```  
+
+Eather way, `clean_NOAA` is now ready to be used for visualizing the historical 
+earthquake data.  
+
+### Unexported Helper Functions  
+
+To minimize 
+
+
+
+<a id="timeline"></a>
+<a id="mapping"></a>

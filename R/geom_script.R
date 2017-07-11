@@ -67,7 +67,7 @@ geom_timeline <- function(mapping = NULL, data = NULL, stat = 'timeline',
 #' # no examples appropriate, this function is completely internal to geom_timeline
 my_draw_key_circle <- function(data, params, size) {
     grid::circleGrob(r = data$size/18,
-                     gp = gpar(
+                     gp = grid::gpar(
                          col = data$color,
                          fill = alpha(data$fill, data$alpha)
                      ))
@@ -91,14 +91,13 @@ my_draw_key_circle <- function(data, params, size) {
 #'
 #' @import ggplot2 grid
 #' @importFrom lubridate ymd
-GeomTimeline <- ggplot2::ggproto('GeomTimeline', Geom,
+GeomTimeline <- ggplot2::ggproto('GeomTimeline', ggplot2::Geom,
         required_aes = c('x'),
         default_aes = ggplot2::aes(y = NULL, color = 'black',
-                          fill = 'black', size = 5,, alpha = 0.3),
+                          fill = 'black', size = 5, alpha = 0.3),
         draw_key = my_draw_key_circle,
         draw_group = function(data, panel_params, coord) {
             coords <- coord$transform(data, panel_params)
-            debug_me <<- coords
             grid::circleGrob(
                 coords$x,
                 coords$y,
@@ -190,11 +189,11 @@ geom_timeline_label <- function(mapping = NULL, data = NULL, stat = 'timeline_la
 #'
 #' @import ggplot2
 #' @importFrom lubridate ymd
-GeomTimelineLabel <- ggplot2::ggproto('GeomTimelineLabel', Geom,
+GeomTimelineLabel <- ggplot2::ggproto('GeomTimelineLabel', ggplot2::Geom,
              required_aes = c('x', 'label'),
-             default_aes = aes(y = NULL, magnitude = NULL, color = 'black',
+             default_aes = ggplot2::aes(y = NULL, magnitude = NULL, color = 'black',
                                lty = 1, lwd = 1),
-             draw_key = draw_key_abline,
+             draw_key = ggplot2::draw_key_abline,
              draw_group = function(data, panel_params, coord) {
                  coords <- coord$transform(data, panel_params)
                  grid::gList(
@@ -274,7 +273,7 @@ stat_timeline <- function(mapping = NULL, data = NULL, geom = 'timeline',
 #'
 #' @import ggplot2 grid
 #' @importFrom lubridate ymd
-StatTimeline <- ggplot2::ggproto('StatTimeline',Stat,
+StatTimeline <- ggplot2::ggproto('StatTimeline', ggplot2::Stat,
         required_aes = c('x'),
         compute_group = function(data, scales, params, x_min, x_max) {
             if(!('y' %in% names(data))) {
@@ -342,7 +341,7 @@ stat_timeline_label <- function(mapping = NULL, data = NULL, geom = 'timeline_la
 #'
 #' @import ggplot2
 #' @importFrom lubridate ymd
-StatTimelineLabel <- ggplot2::ggproto('StatTimelineLabel',Stat,
+StatTimelineLabel <- ggplot2::ggproto('StatTimelineLabel',ggplot2::Stat,
      required_aes = c('x'),
      compute_group = function(data, scales, params, top_x_mag, x_min, x_max) {
          if(!('y' %in% names(data))) {
