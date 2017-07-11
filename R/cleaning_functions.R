@@ -98,8 +98,8 @@ title_case <- function(char_vect) {
     is_paren <- substring(words, 1,1) == "("
     front <- toupper(substring(words,1,1))
     front[is_paren] <- paste0("(", toupper(substring(words[is_paren],2,2)))
-    back <- substring(words, 2)
-    back[is_paren] <- substring(words[is_paren],3)
+    back <- tolower(substring(words, 2))
+    back[is_paren] <- tolower(substring(words[is_paren],3))
     return(paste0(front, back, collapse = " "))
 
 }

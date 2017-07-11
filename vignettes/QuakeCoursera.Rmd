@@ -9,7 +9,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r echo = FALSE, messages = FALSE}
+```{r echo = FALSE, message = FALSE, warning = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 options(tibble.print_min = 4L, tibble.print_max = 4L)
 library(QuakeCursera)
@@ -28,9 +28,9 @@ how to use each of the individual features.
 
 This document is organized into three broad categores, as follows:  
 
-1.  [Getting and Cleaning the Data](data)  
-2.  [Timeline Visualization](timeline)  
-3.  [Interactive Mapping](mapping)  
+1.  [Getting and Cleaning the Data](#data)  
+2.  [Timeline Visualization](#timeline)  
+3.  [Interactive Mapping](#mapping)  
 
 ## Getting and Cleaning the Data  
 <a id="data"></a>
@@ -63,9 +63,36 @@ earthquake data.
 
 ### Unexported Helper Functions  
 
-To minimize 
+To minimize cluttering the namespace of the user, only the most likely to be used functions
+are exported and easily available.  However, several helper functions are included which
+can be accessed directly using the `:::` operator. 
+
+`eq_good_date()` Takes year, month, and day as integer input and returns a valid date object.  Negative years are interpreted as BCE dates.  
+```{r}
+QuakeCoursera:::eq_good_date(2017, 7, 11)
+QuakeCoursera:::eq_good_date(-2000, 1, 1)
+```  
+It should be noted that R date objects do not handle BCE dates very well, and date differences between BCE and CE will be off by a year, as R date objects behave as if a year 0 exists, when in fact 1 CE began immediately after 1 BCE concluded.  
+
+`eq_location_clean()` Takes a string input, strips out everything before a ':' character, 
+converts the remainder to Title Case, and cleans up comma formats.  This is useful as the 
+LOCATION_NAME field in the raw data duplicates the data in COUNTRY (always before a colon) 
+and makes the rest attractive for use as a label.  
+```{r}
+QuakeCoursera:::eq_location_clean("USA:  sAn francisco")
+```
+
+`title_case()` Converts any string to title case.  What is title case? 'This Is Title Case'.  'this is not title case'.  
+```{r}
+QuakeCoursera:::title_case('this is now title case')
+QuakeCoursera:::title_case('THIS IS NOW TITLE CASE TOO')
+```  
 
 
-
+## Timeline Visualization  
 <a id="timeline"></a>
+
+A timeline is a great way to see when significant earthquakes have ocurred.  This package includes a custom `geom` and `stat` to make creating just such a plot with the widely-used 
+`ggplot2` package.
+
 <a id="mapping"></a>
