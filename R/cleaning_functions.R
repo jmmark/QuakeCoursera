@@ -10,7 +10,18 @@
 #' @return a single date object
 #'
 #' @details Note that R date objects do not handle BCE dates well.  For example, they assume
-#'  a year 0 exists, when in fact dates go from 1 BCE to 1 CE, with no 0 in between.
+#'  a year 0 exists, when in fact dates go from 1 BCE to 1 CE, with no 0 in between.  Therefore,
+#'  date differences between BCE and CE will not be correct.  However, date ranges should still be
+#'  accurately reflected.
+#'
+#'  Not all entries have date details beyond year, in that case the date is
+#'  January 1 of the appropriate year
+#'
+#' @examples
+#' eq_good_date(2017, 7, 1)
+#'
+#' @importFrom lubridate ymd origin
+#' @importFrom stringr str_pad
 eq_good_date <- function(yr, mnth, dy) {
 
     # create a BCE mask
@@ -47,7 +58,19 @@ eq_good_date <- function(yr, mnth, dy) {
     return(good_dates)
 }
 
-# location name cleaning function
+#' Clean up location names in the NOAA earthquake database
+#'
+#' The LOCATION_NAME column in the NOAA database starts out life including
+#' the country name, as well as other formatting issues.  Use this function
+#' to strip out and reformat the region for convenient labeleing
+#'
+#' @param loc_nm String containing original location name from the NOAA earthquake file
+#'
+#' @return A string removing the country name, fixing spacing, and converting
+#' to Title Case
+#'
+#' @examples
+#' eq_location_clean("USA: san francisco")
 eq_location_clean <- function(loc_nm) {
     # remove the country and colon, convert to title case
     clean_name <- gsub("^.*:\\s*","",loc_nm)
@@ -58,6 +81,17 @@ eq_location_clean <- function(loc_nm) {
     return(clean_name)
 }
 
+#' Convert a string to Title Case
+#'
+#' Have 'a string like this'? This function turns it into 'A String Like This'
+#'
+#' @param char_vect A character vector of the string to be converted to title case
+#'
+#' @return A character vector that is now Title Case
+#'
+#' @examples
+#' title_case('this is not title case')
+#' title_case('THIS IS NOT TITLE CASE EITHER')
 title_case <- function(char_vect) {
     # convert to title case, handling parentheses
     words <- strsplit(char_vect, " ")[[1]]
@@ -70,7 +104,36 @@ title_case <- function(char_vect) {
 
 }
 
-# overall data cleaning function
+#' Clean the raw NOAA earthquake data to interface well with the other functions
+#' in this package
+#'
+#' The NOAA earthquake database that is included with this package is already
+#' clean and ready to use with the other functions.  However, that data is frozen
+#' as of July 1, 2017.  More up-to-date data can be cleaned up using this function
+#'
+#' @param raw_data A data frame containing the raw NOAA earthquake data.  The
+#' function assumes the data has been read in using \code{readr::read_delim}
+#' with the option \code{delim = '\\t'}
+#'
+#' @return A data frame of cleaned data, ready to be used in the visualization
+#' functions included in this package
+#'
+#' @details
+#' The raw data is available \href{https://www.ngdc.noaa.gov/nndc/struts/form?t=101650&s=1&d=1}{here}
+#' The data cleanup does the following:
+#'  1. create DATE, and make sure it is date class
+#' 2. make sure LONGITUDE and LATTITUDE are numeric; drop NA lat/lon
+#' 3. clean location name
+#' 4. make sure magnatude measures are numeric
+#' 5. make sure deaths are numeric
+#'
+#' @examples
+#' # assumes the raw NOAA Significant Earthquake Database is available in
+#' # your working directory as 'raw_NOAA.txt'
+#' clean_NOAA <- eq_clean_data(readr::read_delim('raw_NOAA.txt', delim = '\\t'))
+#'
+#' @export
+#' @importFrom dplyr mutate filter
 eq_clean_data <- function(raw_data) {
     # need to do the following:
     # 1. create DATE, and make sure it is date class
@@ -79,11 +142,11 @@ eq_clean_data <- function(raw_data) {
     # 4. make sure magnatude measures are numeric
     # 5. make sure deaths are numeric
     clean_data <- raw_data %>%
-        mutate(DATE = eq_good_date(YEAR, MONTH, DAY)) %>%
-        filter(!is.na(LATITUDE) & !is.na(LONGITUDE)) %>%
-        mutate(LONGITUDE = as.numeric(LONGITUDE), LATITUDE = as.numeric(LATITUDE)) %>%
-        mutate(LOCATION_NAME = eq_location_clean(LOCATION_NAME)) %>%
-        mutate(EQ_PRIMARY = as.numeric(EQ_PRIMARY),
+        dplyr::mutate(DATE = eq_good_date(YEAR, MONTH, DAY)) %>%
+        dplyr::filter(!is.na(LATITUDE) & !is.na(LONGITUDE)) %>%
+        dplyr::mutate(LONGITUDE = as.numeric(LONGITUDE), LATITUDE = as.numeric(LATITUDE)) %>%
+        dplyr::mutate(LOCATION_NAME = eq_location_clean(LOCATION_NAME)) %>%
+        dplyr::mutate(EQ_PRIMARY = as.numeric(EQ_PRIMARY),
                EQ_MAG_MW = as.numeric(EQ_MAG_MW),
                EQ_MAG_MS = as.numeric(EQ_MAG_MS),
                EQ_MAG_MB = as.numeric(EQ_MAG_MB),
