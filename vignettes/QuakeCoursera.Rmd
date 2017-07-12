@@ -17,6 +17,7 @@ library(ggplot2)
 library(dplyr)
 library(readr)
 library(leaflet)
+library(lubridate)
 ```  
 
 QuakeCoursera is a package developed as the capstone project for the Advanced 
@@ -92,7 +93,21 @@ QuakeCoursera:::title_case('THIS IS NOW TITLE CASE TOO')
 ## Timeline Visualization  
 <a id="timeline"></a>
 
-A timeline is a great way to see when significant earthquakes have ocurred.  This package includes a custom `geom` and `stat` to make creating just such a plot with the widely-used 
-`ggplot2` package.
+A timeline is a great way to see when significant earthquakes have ocurred.  This package
+includes a custom `geom` and `stat` to make creating just such a plot easier with the widely-used `ggplot2` package.
+
+`geom_timeline()` takes, at minimum, a series of dates as its `x` aesthetic, and plots
+those dates as a series of circles.  It defaults to using `stat_timeline()` for data
+transfomation, which allows `x_min` and `x_max` arguments to be passed to limit the date
+range to be plotted.  In its simplest form:  
+
+```{r}
+filter(clean_NOAA, COUNTRY == "USA") %>% ggplot(aes(x = DATE)) + 
+    geom_timeline(x_min = ymd("2000-01-01"), x_max = ymd("2017-07-01")) +
+    theme_minimal() + theme(panel.grid.major = element_blank()) +
+    theme(axis.text.y = element_blank()) +
+    theme(panel.grid.minor = element_blank()) + ylim(0.5,2)
+
+```
 
 <a id="mapping"></a>
