@@ -69,7 +69,8 @@ my_draw_key_circle <- function(data, params, size) {
     grid::circleGrob(r = data$size/18,
                      gp = grid::gpar(
                          col = data$color,
-                         fill = alpha(data$fill, data$alpha)
+                         fill = alpha(data$fill, data$alpha),
+                         lwd = 0.1
                      ))
 }
 
@@ -191,9 +192,9 @@ geom_timeline_label <- function(mapping = NULL, data = NULL, stat = 'timeline_la
 #' @importFrom lubridate ymd
 GeomTimelineLabel <- ggplot2::ggproto('GeomTimelineLabel', ggplot2::Geom,
              required_aes = c('x', 'label'),
-             default_aes = ggplot2::aes(y = NULL, magnitude = NULL, color = 'black',
-                               lty = 1, lwd = 1),
-             draw_key = ggplot2::draw_key_abline,
+             default_aes = ggplot2::aes(y = NULL, magnatude = NULL, color = 'black',
+                               fill = 'black', alpha = 0.3, lty = 1, lwd = 1),
+             draw_key = my_draw_key_circle,
              draw_group = function(data, panel_params, coord) {
                  coords <- coord$transform(data, panel_params)
                  grid::gList(
@@ -354,10 +355,10 @@ StatTimelineLabel <- ggplot2::ggproto('StatTimelineLabel',ggplot2::Stat,
              data <- data[data$x <= x_max, ]
          }
 
-         if(is.null(top_x_mag) | !('magnitude' %in% names(data))){
+         if(is.null(top_x_mag) | !('magnatude' %in% names(data))){
              return(data)
          } else {
-             data <- data[order(data$magnitude, decreasing = TRUE),][1:top_x_mag,]
+             data <- data[order(data$magnatude, decreasing = TRUE),][1:min(top_x_mag,nrow(data)),]
              return(data)
          }
      }

@@ -12,7 +12,7 @@ vignette: >
 ```{r echo = FALSE, message = FALSE, warning = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 options(tibble.print_min = 4L, tibble.print_max = 4L)
-library(QuakeCursera)
+library(QuakeCoursera)
 library(ggplot2)
 library(dplyr)
 library(readr)
@@ -101,13 +101,46 @@ those dates as a series of circles.  It defaults to using `stat_timeline()` for 
 transfomation, which allows `x_min` and `x_max` arguments to be passed to limit the date
 range to be plotted.  In its simplest form:  
 
-```{r}
+```{r, fig.width = 7, fig.height = 4}
 filter(clean_NOAA, COUNTRY == "USA") %>% ggplot(aes(x = DATE)) + 
     geom_timeline(x_min = ymd("2000-01-01"), x_max = ymd("2017-07-01")) +
-    theme_minimal() + theme(panel.grid.major = element_blank()) +
-    theme(axis.text.y = element_blank()) +
-    theme(panel.grid.minor = element_blank()) + ylim(0.5,2)
+    theme_minimal() + theme(panel.grid.major.x = element_blank()) +
+    theme(axis.text.y  = element_blank()) +
+    theme(panel.grid.minor.x = element_blank()) +
+    scale_y_continuous(breaks = 1, limits = c(0.5, 2)) +
+    labs(x = "Date")
 
 ```
 
+Adding in optional `y` and `size` aesthetics make the visualization even more powerful--we can 
+compare the magnatude of earthquakes among countries during the same period, for exxample:  
+
+```{r, fig.width = 7, fig.height = 4}
+filter(clean_NOAA, COUNTRY == "USA" | COUNTRY == "CANADA") %>% 
+    ggplot(aes(x = DATE, y = COUNTRY, size = EQ_PRIMARY)) + 
+    geom_timeline(x_min = ymd("2000-01-01"), x_max = ymd("2017-07-01")) +
+    theme_minimal() + theme(panel.grid.major.x = element_blank()) +
+    theme(panel.grid.minor.x = element_blank()) + theme(legend.position = "bottom") +
+    labs(x = "Date", y = "Country", size = "Magnatude")
+```
+
+This package also has a Geom and Stat pair to allow easy labeling of the occurrences 
+plotted on the timeline--`geom_timeline_label()` and `stat_timeline_label()`.  Once again 
+the Stat is called by default within the geom, so there is no need to demonstrate the Stat.  The Geom requires a `label` aesthetic, the text for the labels to be added.  It
+also adds an additional optional `magnatidue` aesthetic which, when combined with the 
+optional `top_x_mag` argument limits the total labels shown by order of `magnatude`.  So,
+extending the above:  
+
+```{r, fig.width = 7, fig.height = 5}
+xmin <- ymd("2000-01-01")
+xmax <- ymd("2017-07-01")
+filter(clean_NOAA, COUNTRY == "CANADA" | COUNTRY == "USA") %>% 
+    ggplot(aes(x = DATE, y = COUNTRY, size = EQ_PRIMARY)) + 
+    geom_timeline(x_min = xmin, x_max = xmax) +
+    geom_timeline_label(aes(label = LOCATION_NAME, magnatude = EQ_PRIMARY),
+                        x_min = xmin, x_max = xmax, top_x_mag = 5) +
+    theme_minimal() + theme(panel.grid.major.x = element_blank()) +
+    theme(panel.grid.minor.x = element_blank()) + theme(legend.position = "bottom") +
+    labs(x = "Date", y = "Country", size = "Magnatude") 
+```
 <a id="mapping"></a>
