@@ -142,5 +142,35 @@ filter(clean_NOAA, COUNTRY == "CANADA" | COUNTRY == "USA") %>%
     theme_minimal() + theme(panel.grid.major.x = element_blank()) +
     theme(panel.grid.minor.x = element_blank()) + theme(legend.position = "bottom") +
     labs(x = "Date", y = "Country", size = "Magnatude") 
-```
+```  
+
+## Interactive Mapping  
 <a id="mapping"></a>
+The final component to this package is an easy shortcut for creating an interactive map 
+of earthquake locations using the popular `leaflet` package.  The function for doing so
+is `eq_map()`, which by default plots the events by `LATITUDE` or `LONGITUDE` found in 
+the `data` argument as circles, with the magnatude of the earthquake as found in `EQ_PRIMARY` 
+as the size of the circles.  An optional `annot_col` argument allows labeling the locations 
+(the label comes up when the circle is clicked).  For example:  
+
+```{r, fig.width = 7, fig.height = 5}
+mp <- clean_NOAA %>% filter(year(DATE) >= 2000 & COUNTRY == "MEXICO") %>%
+    eq_map(annot_col = "DATE")
+
+mp
+```  
+
+Since no single column in the data is an ideal label, the function `eq_create_label()`
+combines the data in `LOCATION_NAME`, `EQ_PRIMARY`, and `TOTAL_DEATHS` into a
+single column, as well as adding html formatting for a nice display.  Once again, 
+click the circles to see the labels:  
+
+```{r, fig.width = 7, fig.height = 5}
+mp <- clean_NOAA %>% filter(year(DATE) >= 2000 & COUNTRY == "MEXICO") %>%
+    mutate(popup_text = eq_create_label(.)) %>% 
+    eq_map(annot_col = "popup_text")
+
+mp
+```  
+
+
