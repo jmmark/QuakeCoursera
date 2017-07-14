@@ -9,14 +9,15 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r echo = FALSE, messages = FALSE}
+```{r echo = FALSE, message = FALSE, warning = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 options(tibble.print_min = 4L, tibble.print_max = 4L)
-library(QuakeCursera)
+library(QuakeCoursera)
 library(ggplot2)
 library(dplyr)
 library(readr)
 library(leaflet)
+library(lubridate)
 ```  
 
 QuakeCoursera is a package developed as the capstone project for the Advanced 
@@ -28,9 +29,9 @@ how to use each of the individual features.
 
 This document is organized into three broad categores, as follows:  
 
-1.  [Getting and Cleaning the Data](data)  
-2.  [Timeline Visualization](timeline)  
-3.  [Interactive Mapping](mapping)  
+1.  [Getting and Cleaning the Data](#data)  
+2.  [Timeline Visualization](#timeline)  
+3.  [Interactive Mapping](#mapping)  
 
 ## Getting and Cleaning the Data  
 <a id="data"></a>
@@ -90,6 +91,88 @@ QuakeCoursera:::title_case('THIS IS NOW TITLE CASE TOO')
 
 
 ## Timeline Visualization  
-A 
 <a id="timeline"></a>
+
+A timeline is a great way to see when significant earthquakes have ocurred.  This package
+includes a custom `geom` and `stat` to make creating just such a plot easier with the widely-used `ggplot2` package.
+
+`geom_timeline()` takes, at minimum, a series of dates as its `x` aesthetic, and plots
+those dates as a series of circles.  It defaults to using `stat_timeline()` for data
+transfomation, which allows `x_min` and `x_max` arguments to be passed to limit the date
+range to be plotted.  In its simplest form:  
+
+```{r, fig.width = 7, fig.height = 4}
+filter(clean_NOAA, COUNTRY == "USA") %>% ggplot(aes(x = DATE)) + 
+    geom_timeline(x_min = ymd("2000-01-01"), x_max = ymd("2017-07-01")) +
+    theme_minimal() + theme(panel.grid.major.x = element_blank()) +
+    theme(axis.text.y  = element_blank()) +
+    theme(panel.grid.minor.x = element_blank()) +
+    scale_y_continuous(breaks = 1, limits = c(0.5, 2)) +
+    labs(x = "Date")
+
+```
+
+Adding in optional `y` and `size` aesthetics make the visualization even more powerful--we can 
+compare the magnatude of earthquakes among countries during the same period, for exxample:  
+
+```{r, fig.width = 7, fig.height = 4}
+filter(clean_NOAA, COUNTRY == "USA" | COUNTRY == "CANADA") %>% 
+    ggplot(aes(x = DATE, y = COUNTRY, size = EQ_PRIMARY)) + 
+    geom_timeline(x_min = ymd("2000-01-01"), x_max = ymd("2017-07-01")) +
+    theme_minimal() + theme(panel.grid.major.x = element_blank()) +
+    theme(panel.grid.minor.x = element_blank()) + theme(legend.position = "bottom") +
+    theme(legend.key.size = unit(0.078, 'npc')) +
+    labs(x = "Date", y = "Country", size = "Magnatude")
+```
+
+This package also has a Geom and Stat pair to allow easy labeling of the occurrences 
+plotted on the timeline--`geom_timeline_label()` and `stat_timeline_label()`.  Once again 
+the Stat is called by default within the geom, so there is no need to demonstrate the Stat.  The Geom requires a `label` aesthetic, the text for the labels to be added.  It
+also adds an additional optional `magnatidue` aesthetic which, when combined with the 
+optional `top_x_mag` argument limits the total labels shown by order of `magnatude`.  So,
+extending the above:  
+
+```{r, fig.width = 7, fig.height = 5}
+xmin <- ymd("2000-01-01")
+xmax <- ymd("2017-07-01")
+filter(clean_NOAA, COUNTRY == "CANADA" | COUNTRY == "USA") %>% 
+    ggplot(aes(x = DATE, y = COUNTRY, size = EQ_PRIMARY)) + 
+    geom_timeline(x_min = xmin, x_max = xmax) +
+    geom_timeline_label(aes(label = LOCATION_NAME, magnatude = EQ_PRIMARY),
+                        x_min = xmin, x_max = xmax, top_x_mag = 5) +
+    theme_minimal() + theme(panel.grid.major.x = element_blank()) +
+    theme(panel.grid.minor.x = element_blank()) + theme(legend.position = "bottom") +
+    theme(legend.key.size = unit(0.078, 'npc')) +
+    labs(x = "Date", y = "Country", size = "Magnatude") 
+```  
+
+## Interactive Mapping  
 <a id="mapping"></a>
+The final component to this package is an easy shortcut for creating an interactive map 
+of earthquake locations using the popular `leaflet` package.  The function for doing so
+is `eq_map()`, which by default plots the events by `LATITUDE` or `LONGITUDE` found in 
+the `data` argument as circles, with the magnatude of the earthquake as found in `EQ_PRIMARY` 
+as the size of the circles.  An optional `annot_col` argument allows labeling the locations 
+(the label comes up when the circle is clicked).  For example:  
+
+```{r, fig.width = 7, fig.height = 5}
+mp <- clean_NOAA %>% filter(year(DATE) >= 2000 & COUNTRY == "MEXICO") %>%
+    eq_map(annot_col = "DATE")
+
+mp
+```  
+
+Since no single column in the data is an ideal label, the function `eq_create_label()`
+combines the data in `LOCATION_NAME`, `EQ_PRIMARY`, and `TOTAL_DEATHS` into a
+single column, as well as adding html formatting for a nice display.  Once again, 
+click the circles to see the labels:  
+
+```{r, fig.width = 7, fig.height = 5}
+mp <- clean_NOAA %>% filter(year(DATE) >= 2000 & COUNTRY == "MEXICO") %>%
+    mutate(popup_text = eq_create_label(.)) %>% 
+    eq_map(annot_col = "popup_text")
+
+mp
+```  
+
+
