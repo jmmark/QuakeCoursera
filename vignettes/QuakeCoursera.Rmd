@@ -121,6 +121,7 @@ filter(clean_NOAA, COUNTRY == "USA" | COUNTRY == "CANADA") %>%
     geom_timeline(x_min = ymd("2000-01-01"), x_max = ymd("2017-07-01")) +
     theme_minimal() + theme(panel.grid.major.x = element_blank()) +
     theme(panel.grid.minor.x = element_blank()) + theme(legend.position = "bottom") +
+    theme(legend.key.size = unit(0.078, 'npc')) +
     labs(x = "Date", y = "Country", size = "Magnatude")
 ```
 
@@ -141,6 +142,7 @@ filter(clean_NOAA, COUNTRY == "CANADA" | COUNTRY == "USA") %>%
                         x_min = xmin, x_max = xmax, top_x_mag = 5) +
     theme_minimal() + theme(panel.grid.major.x = element_blank()) +
     theme(panel.grid.minor.x = element_blank()) + theme(legend.position = "bottom") +
+    theme(legend.key.size = unit(0.078, 'npc')) +
     labs(x = "Date", y = "Country", size = "Magnatude") 
 ```  
 
