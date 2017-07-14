@@ -1,0 +1,95 @@
+---
+title: "Using the QuakeCoursera Package"
+author: "Jake Markman"
+date: "7/11/2017"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using the QuakeCoursera Package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r echo = FALSE, messages = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+options(tibble.print_min = 4L, tibble.print_max = 4L)
+library(QuakeCursera)
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(leaflet)
+```  
+
+QuakeCoursera is a package developed as the capstone project for the Advanced 
+R Programming specialization on [Coursera](http://www.coursera.org).  It exists
+to help clean and visualize data from the [NOAA Significant Earthquake Database](https://www.ngdc.noaa.gov/nndc/struts/form?t=101650&s=1&d=1)  
+  
+This document serves as an introduction to the package and demonstrates
+how to use each of the individual features.
+
+This document is organized into three broad categores, as follows:  
+
+1.  [Getting and Cleaning the Data](data)  
+2.  [Timeline Visualization](timeline)  
+3.  [Interactive Mapping](mapping)  
+
+## Getting and Cleaning the Data  
+<a id="data"></a>
+
+The [NOAA Significant Earthquake Database](https://www.ngdc.noaa.gov/nndc/struts/form?t=101650&s=1&d=1) 
+is an amazing resource.  It has information on earthquakes that have occurred worldwide over more than 
+4000 years.  However as a raw text file, it isn't the easist to work with.  
+
+Some cleaning is required to get the data ready to work nicely with the visualization
+functions provided below.  The easist thing to do is simply to load the clean dataset 
+included with this package using the `data()` function:  
+
+```{r}
+data('clean_NOAA')
+```  
+
+The drawback with this approach is that the included dataset has been frozen as of the
+date of the download for creation of this package, July 1 2017.  You can download the 
+most recent dataset yourself [here](https://www.ngdc.noaa.gov/nndc/struts/results?type_0=Exact&query_0=$ID&t=101650&s=13&d=189&dfn=signif.txt) 
+and clean it using the `eq_clean_data()` function.  Assuming you have downloaded 
+the raw data to your working directory as 'signif.txt':  
+
+```{r eval = FALSE}
+clean_NOAA <- readr::read_delim('signif.txt',delim = '\t') %>%
+    eq_clean_data()
+```  
+
+Eather way, `clean_NOAA` is now ready to be used for visualizing the historical 
+earthquake data.  
+
+### Unexported Helper Functions  
+
+To minimize cluttering the namespace of the user, only the most likely to be used functions
+are exported and easily available.  However, several helper functions are included which
+can be accessed directly using the `:::` operator. 
+
+`eq_good_date()` Takes year, month, and day as integer input and returns a valid date object.  Negative years are interpreted as BCE dates.  
+```{r}
+QuakeCoursera:::eq_good_date(2017, 7, 11)
+QuakeCoursera:::eq_good_date(-2000, 1, 1)
+```  
+It should be noted that R date objects do not handle BCE dates very well, and date differences between BCE and CE will be off by a year, as R date objects behave as if a year 0 exists, when in fact 1 CE began immediately after 1 BCE concluded.  
+
+`eq_location_clean()` Takes a string input, strips out everything before a ':' character, 
+converts the remainder to Title Case, and cleans up comma formats.  This is useful as the 
+LOCATION_NAME field in the raw data duplicates the data in COUNTRY (always before a colon) 
+and makes the rest attractive for use as a label.  
+```{r}
+QuakeCoursera:::eq_location_clean("USA:  sAn francisco")
+```
+
+`title_case()` Converts any string to title case.  What is title case? 'This Is Title Case'.  'this is not title case'.  
+```{r}
+QuakeCoursera:::title_case('this is now title case')
+QuakeCoursera:::title_case('THIS IS NOW TITLE CASE TOO')
+```  
+
+
+## Timeline Visualization  
+A 
+<a id="timeline"></a>
+<a id="mapping"></a>
