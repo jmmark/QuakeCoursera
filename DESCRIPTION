@@ -17,5 +17,6 @@ Suggests: knitr,
     grid,
     dplyr,
     leaflet,
-    readr
+    readr,
+    lubridate
 VignetteBuilder: knitr
