@@ -30,6 +30,6 @@ Note that R date objects do not handle BCE dates well.  For example, they assume
  January 1 of the appropriate year
 }
 \examples{
-eq_good_date(2017, 7, 1)
+QuakeCoursera:::eq_good_date(2017, 7, 1)
 
 }

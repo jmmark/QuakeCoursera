@@ -2,7 +2,7 @@ library(QuakeCoursera)
 library(readr)
 library(lubridate)
 context("Cleaning functions")
-raw_NOAA <- read_delim('../../data-raw/signif.txt', delim = '\t')
+raw_NOAA <- read_delim('../../../QuakeCoursera/data-raw/signif.txt', delim = '\t')
 
 test_that("Clean data is delivered correctly",{
     test_NOAA <- eq_clean_data(raw_NOAA)

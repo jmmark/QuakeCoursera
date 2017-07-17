@@ -29,13 +29,17 @@ This function uses of the popular \code{leaflet} package, which creates interact
 html maps within R
 }
 \examples{
-data('EQ_NOAA') \%>\%
+\dontrun{
+data('clean_NOAA')
+clean_NOAA \%>\%
   dplyr::filter(COUNTRY == "MEXICO" & lubridate::year(DATE) >= 2000) \%>\%
   eq_map(annot_col = "DATE")
-data('EQ_NOAA') \%>\%
+data('clean_NOAA')
+clean_NOAA \%>\%
   dplyr::filter(COUNTRY == "MEXICO" & lubridate::year(DATE) >= 2000) \%>\%
   dplyr::mutate(popup_text = eq_create_label(.)) \%>\%
   eq_map(annot_col = "DATE")
+}
 
 }
 \references{

@@ -19,5 +19,5 @@ the country name, as well as other formatting issues.  Use this function
 to strip out and reformat the region for convenient labeleing
 }
 \examples{
-eq_location_clean("USA: san francisco")
+QuakeCoursera:::eq_location_clean("USA: san francisco")
 }

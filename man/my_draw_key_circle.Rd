@@ -6,6 +6,13 @@
 \usage{
 my_draw_key_circle(data, params, size)
 }
+\arguments{
+\item{data}{The dataframe passed to the drawing key}
+
+\item{params}{The params passed from the geom}
+
+\item{size}{The size of the legend key}
+}
 \description{
 This function is completely internal to geom_timeline, and
 is not of use elsewhere

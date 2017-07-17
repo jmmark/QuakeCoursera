@@ -19,13 +19,17 @@
 #' @return An html map object, to which further Leaflet objects can be added
 #'
 #' @examples
-#' data('EQ_NOAA') %>%
+#' \dontrun{
+#' data('clean_NOAA')
+#' clean_NOAA %>%
 #'   dplyr::filter(COUNTRY == "MEXICO" & lubridate::year(DATE) >= 2000) %>%
 #'   eq_map(annot_col = "DATE")
-#' data('EQ_NOAA') %>%
+#' data('clean_NOAA')
+#' clean_NOAA %>%
 #'   dplyr::filter(COUNTRY == "MEXICO" & lubridate::year(DATE) >= 2000) %>%
 #'   dplyr::mutate(popup_text = eq_create_label(.)) %>%
 #'   eq_map(annot_col = "DATE")
+#' }
 #'
 #' @seealso \pkg{leaflet}
 #'

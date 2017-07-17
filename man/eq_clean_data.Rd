@@ -33,6 +33,8 @@ The data cleanup does the following:
 \examples{
 # assumes the raw NOAA Significant Earthquake Database is available in
 # your working directory as 'raw_NOAA.txt'
+\dontrun{
 clean_NOAA <- eq_clean_data(readr::read_delim('raw_NOAA.txt', delim = '\\\\t'))
+}
 
 }

@@ -63,10 +63,15 @@ geom_timeline <- function(mapping = NULL, data = NULL, stat = 'timeline',
 #' This function is completely internal to geom_timeline, and
 #' is not of use elsewhere
 #'
+#' @param data The dataframe passed to the drawing key
+#' @param params The params passed from the geom
+#' @param size The size of the legend key
+#'
 #' @examples
 #' # no examples appropriate, this function is completely internal to geom_timeline
 my_draw_key_circle <- function(data, params, size) {
     grid::circleGrob(r = data$size/18,
+
                      gp = grid::gpar(
                          col = data$color,
                          fill = alpha(data$fill, data$alpha),
@@ -150,7 +155,7 @@ GeomTimeline <- ggplot2::ggproto('GeomTimeline', ggplot2::Geom,
 #' xmax <- lubridate::ymd("2017-07-01")
 #' plt <- ggplot2::ggplot(data = plot_NOAA, ggplot2::aes(x = DATE, y = COUNTRY)) +
 #'   geom_timeline(ggplot2::aes(size = EQ_PRIMARY), x_min = xmin, x_max = xmax) +
-#'   geom_timeline_label(ggplot2::aes(magnatude = EQ_PRIMARY),
+#'   geom_timeline_label(ggplot2::aes(label = LOCATION_NAME, magnatude = EQ_PRIMARY),
 #'      x_min = xmin, x_max = xmax, top_x_mag = 5) +
 #'   ggplot2::theme_minimal()
 #' print(plt)
@@ -183,7 +188,7 @@ geom_timeline_label <- function(mapping = NULL, data = NULL, stat = 'timeline_la
 #' xmax <- lubridate::ymd("2017-07-01")
 #' plt <- ggplot2::ggplot(data = plot_NOAA, ggplot2::aes(x = DATE, y = COUNTRY)) +
 #'   geom_timeline(ggplot2::aes(size = EQ_PRIMARY), x_min = xmin, x_max = xmax) +
-#'   geom_timeline_label(ggplot2::aes(magnatude = EQ_PRIMARY),
+#'   geom_timeline_label(ggplot2::aes(label = LOCATION_NAME, magnatude = EQ_PRIMARY),
 #'      x_min = xmin, x_max = xmax, top_x_mag = 5) +
 #'   ggplot2::theme_minimal()
 #' print(plt)
@@ -250,7 +255,7 @@ stat_timeline <- function(mapping = NULL, data = NULL, geom = 'timeline',
                           position = 'identity', na.rm = FALSE, show.legend = NA,
                           inherit.aes = TRUE, x_min, x_max, ...) {
     ggplot2::layer(
-        stat = StatTimeline, mapping = mapping, data = data, stat = stat,
+        stat = StatTimeline, mapping = mapping, data = data, geom = geom,
         position = position, show.legend = show.legend, inherit.aes = inherit.aes,
         params = list(x_min = x_min, x_max = x_max, na.rm = na.rm, ...)
     )
@@ -302,7 +307,7 @@ StatTimeline <- ggplot2::ggproto('StatTimeline', ggplot2::Stat,
 #' xmax <- lubridate::ymd("2017-07-01")
 #' plt <- ggplot2::ggplot(data = plot_NOAA, ggplot2::aes(x = DATE, y = COUNTRY)) +
 #'   geom_timeline(ggplot2::aes(size = EQ_PRIMARY), x_min = xmin, x_max = xmax) +
-#'   geom_timeline_label(ggplot2::aes(magnatude = EQ_PRIMARY),
+#'   geom_timeline_label(ggplot2::aes(label = LOCATION_NAME, magnatude = EQ_PRIMARY),
 #'      x_min = xmin, x_max = xmax, top_x_mag = 5) +
 #'   ggplot2::theme_minimal()
 #' print(plt)
@@ -315,7 +320,7 @@ stat_timeline_label <- function(mapping = NULL, data = NULL, geom = 'timeline_la
                           inherit.aes = TRUE, top_x_mag = NULL,
                           x_min = NULL, x_max = NULL, ...) {
     ggplot2::layer(
-        stat = StatTimelineLabel, mapping = mapping, data = data, stat = stat,
+        stat = StatTimelineLabel, mapping = mapping, data = data, geom = geom,
         position = position, show.legend = show.legend, inherit.aes = inherit.aes,
         params = list(top_x_mag = top_x_mag,
                       x_min = x_min, x_max = x_max, na.rm = na.rm, ...)
@@ -335,7 +340,7 @@ stat_timeline_label <- function(mapping = NULL, data = NULL, geom = 'timeline_la
 #' xmax <- lubridate::ymd("2017-07-01")
 #' plt <- ggplot2::ggplot(data = plot_NOAA, ggplot2::aes(x = DATE, y = COUNTRY)) +
 #'   geom_timeline(ggplot2::aes(size = EQ_PRIMARY), x_min = xmin, x_max = xmax) +
-#'   geom_timeline_label(ggplot2::aes(magnatude = EQ_PRIMARY),
+#'   geom_timeline_label(ggplot2::aes(label = LOCATION_NAME, magnatude = EQ_PRIMARY),
 #'      x_min = xmin, x_max = xmax, top_x_mag = 5) +
 #'   ggplot2::theme_minimal()
 #' print(plt)

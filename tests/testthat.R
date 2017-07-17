@@ -1,4 +1,4 @@
 library(testthat)
-library(QuakeCursera)
+library(QuakeCoursera)
 
-test_check("QuakeCursera")
+test_check("QuakeCoursera")

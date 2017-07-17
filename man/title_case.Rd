@@ -16,6 +16,6 @@ A character vector that is now Title Case
 Have 'a string like this'? This function turns it into 'A String Like This'
 }
 \examples{
-title_case('this is not title case')
-title_case('THIS IS NOT TITLE CASE EITHER')
+QuakeCoursera:::title_case('this is not title case')
+QuakeCoursera:::title_case('THIS IS NOT TITLE CASE EITHER')
 }

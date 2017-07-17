@@ -18,7 +18,7 @@
 #'  January 1 of the appropriate year
 #'
 #' @examples
-#' eq_good_date(2017, 7, 1)
+#' QuakeCoursera:::eq_good_date(2017, 7, 1)
 #'
 #' @importFrom lubridate ymd origin
 #' @importFrom stringr str_pad
@@ -70,7 +70,7 @@ eq_good_date <- function(yr, mnth, dy) {
 #' to Title Case
 #'
 #' @examples
-#' eq_location_clean("USA: san francisco")
+#' QuakeCoursera:::eq_location_clean("USA: san francisco")
 eq_location_clean <- function(loc_nm) {
     # remove the country and colon, convert to title case
     clean_name <- gsub("^.*:\\s*","",loc_nm)
@@ -90,8 +90,8 @@ eq_location_clean <- function(loc_nm) {
 #' @return A character vector that is now Title Case
 #'
 #' @examples
-#' title_case('this is not title case')
-#' title_case('THIS IS NOT TITLE CASE EITHER')
+#' QuakeCoursera:::title_case('this is not title case')
+#' QuakeCoursera:::title_case('THIS IS NOT TITLE CASE EITHER')
 title_case <- function(char_vect) {
     # convert to title case, handling parentheses
     words <- strsplit(char_vect, " ")[[1]]
@@ -130,10 +130,11 @@ title_case <- function(char_vect) {
 #' @examples
 #' # assumes the raw NOAA Significant Earthquake Database is available in
 #' # your working directory as 'raw_NOAA.txt'
+#' \dontrun{
 #' clean_NOAA <- eq_clean_data(readr::read_delim('raw_NOAA.txt', delim = '\\t'))
+#' }
 #'
 #' @export
-#' @importFrom dplyr mutate filter
 eq_clean_data <- function(raw_data) {
     # need to do the following:
     # 1. create DATE, and make sure it is date class
@@ -141,20 +142,37 @@ eq_clean_data <- function(raw_data) {
     # 3. clean location name
     # 4. make sure magnatude measures are numeric
     # 5. make sure deaths are numeric
-    clean_data <- raw_data %>%
-        dplyr::mutate(DATE = eq_good_date(YEAR, MONTH, DAY)) %>%
-        dplyr::filter(!is.na(LATITUDE) & !is.na(LONGITUDE)) %>%
-        dplyr::mutate(LONGITUDE = as.numeric(LONGITUDE), LATITUDE = as.numeric(LATITUDE)) %>%
-        dplyr::mutate(LOCATION_NAME = eq_location_clean(LOCATION_NAME)) %>%
-        dplyr::mutate(EQ_PRIMARY = as.numeric(EQ_PRIMARY),
-               EQ_MAG_MW = as.numeric(EQ_MAG_MW),
-               EQ_MAG_MS = as.numeric(EQ_MAG_MS),
-               EQ_MAG_MB = as.numeric(EQ_MAG_MB),
-               EQ_MAG_ML = as.numeric(EQ_MAG_ML),
-               EQ_MAG_MFA = as.numeric(EQ_MAG_MFA),
-               EQ_MAG_UNK = as.numeric(EQ_MAG_UNK),
-               DEATHS = as.numeric(DEATHS),
-               TOTAL_DEATHS = as.numeric(TOTAL_DEATHS))
+    # clean_data <- raw_data %>%
+    #     dplyr::mutate(DATE = eq_good_date(YEAR, MONTH, DAY)) %>%
+    #     dplyr::filter(!is.na(LATITUDE) & !is.na(LONGITUDE)) %>%
+    #     dplyr::mutate(LONGITUDE = as.numeric(LONGITUDE), LATITUDE = as.numeric(LATITUDE)) %>%
+    #     dplyr::mutate(LOCATION_NAME = eq_location_clean(LOCATION_NAME)) %>%
+    #     dplyr::mutate(EQ_PRIMARY = as.numeric(EQ_PRIMARY),
+    #            EQ_MAG_MW = as.numeric(EQ_MAG_MW),
+    #            EQ_MAG_MS = as.numeric(EQ_MAG_MS),
+    #            EQ_MAG_MB = as.numeric(EQ_MAG_MB),
+    #            EQ_MAG_ML = as.numeric(EQ_MAG_ML),
+    #            EQ_MAG_MFA = as.numeric(EQ_MAG_MFA),
+    #            EQ_MAG_UNK = as.numeric(EQ_MAG_UNK),
+    #            DEATHS = as.numeric(DEATHS),
+    #            TOTAL_DEATHS = as.numeric(TOTAL_DEATHS))
+
+    # try rewrite without mutate to ease r cmd check issues
+
+    clean_data <- raw_data
+    clean_data$DATE <- eq_good_date(clean_data$YEAR,
+                                    clean_data$MONTH,
+                                    clean_data$DAY)
+    clean_data <- clean_data[(!is.na(clean_data$LATITUDE) &
+                                  !is.na(clean_data$LONGITUDE)),]
+    clean_data$LOCATION_NAME <- eq_location_clean(clean_data$LOCATION_NAME)
+    make_numerics <- c("LONGITUDE","LATITUDE","EQ_PRIMARY",
+                       "EQ_MAG_MW","EQ_MAG_MS","EQ_MAG_MB",
+                       "EQ_MAG_ML","EQ_MAG_MFA","EQ_MAG_UNK",
+                       "DEATHS","TOTAL_DEATHS")
+    for(nm in make_numerics) {
+        clean_data[[nm]] <- as.numeric(clean_data[[nm]])
+    }
 
     return(clean_data)
 }
